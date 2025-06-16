@@ -1,0 +1,125 @@
+.log-reg-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('../views/components/images/posters-background.jpg');
+    height: calc(100vh - 75px);
+}
+
+.log-reg-container::after {
+    content: '';
+    position: absolute;
+    top: 75px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 0;
+}
+
+.log-reg-box {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 15px;
+    font-size: 20px;
+    color: white;
+    padding: 1.9rem 1.2rem;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.932);
+    font-family: 'Roboto', sans-serif;
+    z-index: 1;
+}
+
+.field {
+    margin-top: .5rem;
+    margin-left: 10px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5em;
+    background-color: #1f2029ce;
+    border-radius: 4px;
+    padding: .5em 1em;
+}
+
+.input-icon {
+    height: 1em;
+    width: 1em;
+    fill: #e05a00;
+}
+
+.input-field {
+    background: none;
+    border: none;
+    outline: none;
+    width: 100%;
+    color: #d3d3d3;
+}
+
+.title {
+    margin-bottom: 1rem;
+    font-size: 1.5em;
+    font-weight: 500;
+    color: #f5f5f5;
+}
+
+.btn {
+    margin: 1rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: .8em;
+    text-transform: uppercase;
+    padding: 0.6em 1.2em;
+    background-color: #e05a00;
+    color: black;
+    transition: all .3s ease-in-out;
+}
+
+.btn-link {
+    color: #f5f5f5;
+    display: block;
+    font-size: .75em;
+    transition: color .3s ease-out;
+}
+
+.field input:focus::placeholder {
+    opacity: 0;
+    transition: opacity .3s;
+}
+
+.btn:hover {
+    background-color: #5e6681;
+    color: #ffeba7;
+    box-shadow: 0 8px 24px 0 rgb(16 39 112 / 20%);
+}
+
+.btn-link:hover {
+    color: #ffeba7;
+}
+
+.genre-selector h3{
+    margin-top: 10px;
+    color: #e05a00;
+}
+
+.genre-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+    margin-left: 50px;
+}
+
+.genre-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.genre-item input {
+    width: 18px;
+    height: 18px;
+}

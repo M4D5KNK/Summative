@@ -1,0 +1,131 @@
+.container {
+    width: 100%;
+    /* Short for "viewport height," 'vh' allows you to size elements relative to the height of the browser window  */
+    /* The calc() CSS function lets you perform calculations when specifying CSS property values. It can be used with <length>, <frequency>, <angle>, <time>, <percentage>, <number>, <integer>, and <color-function> values. */
+    height: calc(100vh - 75px);
+}
+
+.container-body {
+    display: flex;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    width: 100%;
+    height: 100%;
+}
+
+.sign-in-body {
+    flex: 1;
+    display: flex;
+    background-color: #171819;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sign-in-body h2 {
+    color: #e05a00;
+}
+
+.intro-text {
+    flex: 1;
+    padding-bottom: 1rem;
+    font-family: 'Inter', sans-serif;
+  }
+
+.intro-text h1 {
+    font-size: 3.3rem;
+    font-weight: 800;
+    margin-top: 7%;
+    margin-left: 6%;
+    margin-bottom: 3%;
+}
+
+.intro-text h3 {
+    margin-left: 6%;
+    margin-right: 10%;
+    font-weight: 500;
+}
+
+/* ------------------------------------------------- */
+.movie-image-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.gradient {
+    width: 50vh;
+    height: calc(100vh - 75px);
+    background-image: linear-gradient(to left, rgb(0, 0, 0, 0), #171819);
+    position: absolute;
+}
+
+.movie-image {
+    height: 100%;
+    right: 250px;
+    background-color: orangered;
+    overflow: hidden;
+}
+
+.movie-title {
+    position: absolute;
+    bottom: 210px;
+    left: 80px;
+    width: 600px;
+}
+
+.movie-info {
+    position: absolute;
+    bottom: 100px;
+    left: 130px;
+    margin-right: 280px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    color: white;
+}
+
+.movie-button {
+    position: relative;
+    overflow: hidden;
+    height: 3rem;
+    padding: 0 2rem;
+    border-radius: 1.5rem;
+    background: #3d3a4e;
+    background-size: 400%;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    bottom: 170px;
+    left: 700px;
+}
+
+.movie-button:hover::before {
+    transform: scaleX(1);
+}
+
+.movie-button-content {
+    position: relative;
+    z-index: 1;
+}
+
+.movie-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    width: 100%;
+    height: inherit;
+    border-radius: inherit;
+    background: linear-gradient(82.3deg,
+            rgb(233, 109, 93) 10.8%,
+            rgb(238, 155, 88) 94.3%);
+    transition: all 0.475s;
+}
+
+.featured-wrapper {
+  flex: 1;
+  max-width: 100%;
+  padding: 6%;
+  margin-bottom: 2rem;
+}

@@ -1,0 +1,43 @@
+.genre-container {
+    display: flex;
+}
+
+.genre-list {
+    flex: 1;
+    width: 250px;
+    padding: 30px;
+    background-color: #131414;
+    font-family: 'Helvetica', sans-serif; 
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
+    min-height: calc(100vh - 285px); /* Adjust for header height */
+}
+
+.genre-list ul {
+    padding: 0;
+    margin: 0;
+}
+
+.genre-list li {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.genre-list li:hover {
+    background-color: #333;
+}
+
+.genre-list a {
+    color: #d45b2c;
+    text-decoration: none;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.genre-movies {
+    flex: 5.5;
+    width: 100;
+}

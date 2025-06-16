@@ -1,0 +1,42 @@
+.featured-movies-display {
+  display: flex;
+  gap: 15px;
+  max-width: 1200px;
+}
+
+.movie-card {
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  color: white;
+}
+
+.movie-card:hover {
+  transform: scale(1.03);
+}
+
+.movie-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.movie-card h3 {
+  margin: 12px 10px;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Inter', sans-serif;
+
+}
+
+.movie-card p {
+  margin: 0 10px 12px;
+  font-size: 0.9rem;
+  color: #ddd;
+  font-family: 'Inter', sans-serif;
+
+}

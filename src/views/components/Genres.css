@@ -1,0 +1,36 @@
+.genres-title {
+    color: white;
+    padding-bottom: 10px;
+    margin-left: 32%;
+    font-size: 20px;
+}
+
+.genre-list {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.genre-list li {
+    list-style-type: none;
+}
+
+.genre-list button {
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(255, 115, 0) ;
+    color: #363434;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-family: 'helvetica';
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.3s, box-shadow 0.3s;
+    margin: 10px;
+    list-style-type: none;
+}
+
+.genre-list button:hover {
+    transform: translateY(-4px);
+}
