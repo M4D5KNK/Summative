@@ -1,7 +1,5 @@
 .container {
     width: 100%;
-    /* Short for "viewport height," 'vh' allows you to size elements relative to the height of the browser window  */
-    /* The calc() CSS function lets you perform calculations when specifying CSS property values. It can be used with <length>, <frequency>, <angle>, <time>, <percentage>, <number>, <integer>, and <color-function> values. */
     height: calc(100vh - 75px);
 }
 

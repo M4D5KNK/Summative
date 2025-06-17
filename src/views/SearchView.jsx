@@ -13,7 +13,6 @@ function SearchView() {
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
 
-    // Debounce the search query
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedQuery(query);

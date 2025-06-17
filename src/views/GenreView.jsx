@@ -10,7 +10,7 @@ function GenreView() {
   const { genre_id } = useParams();
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
-  const { cart, setCart, user } = useStoreContext(); // Updated to use currentUser
+  const { cart, setCart, user } = useStoreContext(); 
   const [purchasedMovies, setPurchasedMovies] = useState([]);
 
   useEffect(() => {

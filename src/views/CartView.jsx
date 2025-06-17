@@ -8,7 +8,7 @@ import { firestore } from '../firebase';
 import { useState } from 'react';
 
 function CartView() {
-    const { cart, setCart, user } = useStoreContext(); // Changed to currentUser
+    const { cart, setCart, user } = useStoreContext(); 
     const [checkoutMessage, setCheckoutMessage] = useState('');
 
 const handleCheckout = async () => {
@@ -22,19 +22,15 @@ const handleCheckout = async () => {
             const userDoc = await getDoc(userRef);
             const userData = userDoc.data();
 
-            // Get current cart items as array
             const purchasedItems = Array.from(cart.values());
 
-            // Update Firestore with new purchases
             await updateDoc(userRef, {
                 previousPurchases: [...(userData.previousPurchases || []), ...purchasedItems]
             });
 
-            // Clear cart and local storage
             setCart(cart.clear());
             localStorage.removeItem(user.uid);
 
-            // Show success message
             setCheckoutMessage('Thank you for your purchase! Enjoy your movies!');
 
         } catch (error) {

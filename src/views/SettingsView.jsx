@@ -60,25 +60,21 @@ function SettingsView() {
 
             switch (type) {
                 case 'name':
-                    // Update Firebase Auth profile first
                     await updateProfile(auth.currentUser, {
                         displayName: `${formData.firstName} ${formData.lastName}`
                     });
 
-                    // Update Firestore
                     await updateDoc(userRef, {
                         firstName: formData.firstName,
                         lastName: formData.lastName
                     });
 
-                    // Create a new user object with updated displayName
                     const updatedUser = {
                         ...auth.currentUser,
                         displayName: `${formData.firstName} ${formData.lastName}`
                     };
 
-                    // Force context update with new user object
-                    setUser(null); // Clear first to force re-render
+                    setUser(null); 
                     setTimeout(() => {
                         setUser(updatedUser);
                     }, 0);

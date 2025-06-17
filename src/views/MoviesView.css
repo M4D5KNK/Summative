@@ -9,7 +9,7 @@
     background-color: #131414;
     font-family: 'Helvetica', sans-serif; 
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
-    min-height: calc(100vh - 285px); /* Adjust for header height */
+    min-height: calc(100vh - 285px); 
 }
 
 .genre-list ul {
