@@ -74,7 +74,7 @@ function SettingsView() {
                         displayName: `${formData.firstName} ${formData.lastName}`
                     };
 
-                    setUser(null); 
+                    setUser(null);
                     setTimeout(() => {
                         setUser(updatedUser);
                     }, 0);
@@ -155,7 +155,16 @@ function SettingsView() {
                             </div>
                         </>
                     )}
-
+                    <div className="settings-field">
+                        <label className="settings-label">Email</label>
+                        <input
+                            type="email"
+                            value={user?.email || ''}
+                            className="settings-input"
+                            disabled
+                            style={{ opacity: 0.7, cursor: 'not-allowed' }}
+                        />
+                    </div>
                     <div className="settings-field">
                         <label className="settings-label">Favorite Genres</label>
                         <div className="genre-grid">
