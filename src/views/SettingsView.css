@@ -78,7 +78,7 @@
 }
 
 .settings-input {
-    width: 100%;
+    width: 96%;
     min-height: 40px;
     padding: 0.75rem;
     background-color: rgba(255, 255, 255, 0.1);
@@ -170,3 +170,26 @@
     }
 }
 
+.edit-button, .save-button {
+    font-family: 'Sen', sans-serif;
+    font-weight: bold;
+    background-color: #eb7120;
+    color: #251b00;
+    padding: 10px 20px;
+    border-radius: 15px;
+    width: auto;
+    font-size: 15px;
+    font-weight: bold;
+    margin: 30px;
+    cursor: pointer;
+}
+
+.edit-button:hover, .save-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(236, 98, 56, 0.3);
+}
+
+.edit-button:active, .save-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(236, 98, 56, 0.2);
+}

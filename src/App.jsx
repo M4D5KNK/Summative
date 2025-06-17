@@ -8,6 +8,7 @@ import DetailView from "./views/DetailView";
 import SettingsView from "./views/SettingsView";
 import CartView from "./views/CartView";
 import SearchView from "./views/SearchView";
+import ProtectedRoutes from "./utility/ProtectedRoutes";
 import './App.css'
 import ErrorView from "./views/ErrorView";
 import { StoreProvider } from "./context/context";
@@ -20,12 +21,14 @@ function App() {
           <Route path="/" element={<HomeView />} />
           <Route path="/register" element={<RegisterView />} />
           <Route path="/login" element={<LoginView />} />
-          <Route path="/cart" element={<CartView />} />
-          <Route path="/settings" element={<SettingsView />} />
-          <Route path="/movies" element={<MoviesView />}>
-            <Route path="genre/:genre_id" element={<GenreView />} />
-            <Route path="details/:id" element={<DetailView />} />
-            <Route path="search" element={<SearchView />} />
+          <Route element={<ProtectedRoutes />}>
+            <Route path="/cart" element={<CartView />} />
+            <Route path="/settings" element={<SettingsView />} />
+            <Route path="/movies" element={<MoviesView />}>
+              <Route path="genre/:genre_id" element={<GenreView />} />
+              <Route path="details/:id" element={<DetailView />} />
+              <Route path="search" element={<SearchView />} />
+            </Route>
           </Route>
           <Route path="*" element={<ErrorView />} />
         </Routes>

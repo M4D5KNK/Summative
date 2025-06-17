@@ -15,7 +15,6 @@ function RegisterView() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
     const { setUser } = useStoreContext();
     const navigate = useNavigate();
     const checkBoxesRef = useRef({});

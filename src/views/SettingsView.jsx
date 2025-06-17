@@ -1,29 +1,27 @@
 import { useState, useEffect } from 'react';
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { updatePassword, reauthenticateWithCredential, EmailAuthProvider, updateProfile } from "firebase/auth";
+import { updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential, getAuth } from "firebase/auth";
 import { firestore } from "../firebase";
 import { useStoreContext } from "../context/context";
 import { Link } from 'react-router-dom';
-import HeaderSection from './components/HeaderSection.jsx';
-import FooterSection from './components/FooterSection.jsx';
+import HeaderSection from './components/HeaderSection';
+import FooterSection from './components/FooterSection';
 import "./SettingsView.css";
 
 function SettingsView() {
-    const { user } = useStoreContext();
-    const [firstName, setFirstName] = useState(user.displayName.split(' ')[0]);
-    const [lastName, setLastName] = useState(user.displayName.split(' ')[1]);
-    const [newFirstName, setNewFirstName] = useState(user.displayName.split(' ')[0]);
-    const [newLastName, setNewLastName] = useState(user.displayName.split(' ')[1]);
-    const [isEditingFirstName, setIsEditingFirstName] = useState(false);
-    const [isEditingLastName, setIsEditingLastName] = useState(false);
-    const { selectedGenres, setSelectedGenres } = useStoreContext();
-    const [currentPassword, setCurrentPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [isPasswordSectionExpanded, setIsPasswordSectionExpanded] = useState(false);
-    const [previousPurchases, setPreviousPurchases] = useState([]);
-  const [page, setPage] = useState(1);
-    const itemsPerPage = 8;
-    const isGoogleUser = user.providerData.some(profile => profile.providerId === 'google.com');
+    const auth = getAuth();
+    const { user, setUser } = useStoreContext();
+    const [formData, setFormData] = useState({
+        firstName: user?.displayName?.split(' ')[0] || '',
+        lastName: user?.displayName?.split(' ')[1] || '',
+        currentPassword: '',
+        newPassword: '',
+        selectedGenres: [],
+        previousPurchases: [],
+        page: 1
+    });
+    const itemsPerPage = 9;
+    const isGoogleUser = user?.providerData[0]?.providerId === 'google.com';
 
     const genresList = [
         { genre: "Action", id: 28 },
@@ -35,7 +33,7 @@ function SettingsView() {
         { genre: "Fantasy", id: 14 },
         { genre: "Horror", id: 27 },
         { genre: "Sci-Fi", id: 878 },
-        { genre: "Mystery", id: 9648 },
+        { genre: "Mystery", id: 9648 }
     ];
 
     useEffect(() => {
@@ -44,125 +42,78 @@ function SettingsView() {
                 const userDoc = await getDoc(doc(firestore, "users", user.uid));
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
-                    setSelectedGenres(userData.selectedGenres || []);
-                    setPreviousPurchases(userData.previousPurchases || []);
+                    setFormData(prev => ({
+                        ...prev,
+                        selectedGenres: userData.selectedGenres || [],
+                        previousPurchases: userData.previousPurchases || []
+                    }));
                 }
             }
         };
-
         fetchUserData();
-    }, [user, firestore, setSelectedGenres]);
+    }, [user]);
 
-    const handleFirstNameChange = (e) => {
-        setNewFirstName(e.target.value);
-    };
-
-    const handleLastNameChange = (e) => {
-        setNewLastName(e.target.value);
-    };
-
-    const handleGenreChange = (genre) => {
-        setSelectedGenres((prevGenres) =>
-            prevGenres.some((g) => g.id === genre.id)
-                ? prevGenres.filter((g) => g.id !== genre.id)
-                : [...prevGenres, genre]
-        );
-    };
-
-    const handlePasswordChange = async () => {
-        setIsPasswordSectionExpanded(true);
-    };
-
-    const handleCancelPasswordChange = () => {
-        setIsPasswordSectionExpanded(false);
-        setCurrentPassword("");
-        setNewPassword("");
-    };
-
-    const handleUpdatePassword = async () => {
-        if (user && currentPassword) {
-            try {
-                const credential = EmailAuthProvider.credential(user.email, currentPassword);
-                await reauthenticateWithCredential(user, credential);
-            } catch (error) {
-                alert("Your current password is incorrect!");
-                return;
-            }
-        } else {
-            alert("Please enter your current password!");
-            return;
-        }
-
-        if (!newPassword) {
-            alert("Please enter a new password!");
-            return;
-        }
-
-        if (newPassword.length < 6) {
-            alert("New password should be at least 6 characters!");
-            return;
-        }
-
-        if (currentPassword === newPassword) {
-            alert("New password should be different from the current password!");
-            return;
-        }
+    const handleSave = async (type) => {
+        if (!user) return;
 
         try {
-            await updatePassword(user, newPassword);
-            alert("Saved!");
-            setIsPasswordSectionExpanded(false);
-            setCurrentPassword("");
-            setNewPassword("");
-        } catch (error) {
-            alert("Failed to update password.");
-        }
-    };
+            const userRef = doc(firestore, "users", user.uid);
 
-    const handleSaveFirstName = async () => {
-        if (user) {
-            await updateProfile(user, { displayName: `${newFirstName} ${lastName}` });
-            setFirstName(newFirstName);
-            setIsEditingFirstName(false);
-            alert(`Saved first name, ${newFirstName}!`);
-        }
-    };
+            switch (type) {
+                case 'name':
+                    // Update Firebase Auth profile first
+                    await updateProfile(auth.currentUser, {
+                        displayName: `${formData.firstName} ${formData.lastName}`
+                    });
 
-    const handleSaveLastName = async () => {
-        if (user) {
-            await updateProfile(user, { displayName: `${firstName} ${newLastName}` });
-            setLastName(newLastName);
-            setIsEditingLastName(false);
-            alert(`Saved last name, ${newLastName}!`);
-        }
-    };
+                    // Update Firestore
+                    await updateDoc(userRef, {
+                        firstName: formData.firstName,
+                        lastName: formData.lastName
+                    });
 
-    const handleSaveGenres = async () => {
-        if (user) {
-            try {
-                await updateDoc(doc(firestore, "users", user.uid), {
-                    selectedGenres
-                });
-                alert("Saved!");
-            } catch (error) {
-                alert("Failed to update favorite genres.");
+                    // Create a new user object with updated displayName
+                    const updatedUser = {
+                        ...auth.currentUser,
+                        displayName: `${formData.firstName} ${formData.lastName}`
+                    };
+
+                    // Force context update with new user object
+                    setUser(null); // Clear first to force re-render
+                    setTimeout(() => {
+                        setUser(updatedUser);
+                    }, 0);
+
+                    alert('Name updated successfully!');
+                    break;
+
+                case 'password':
+                    if (formData.currentPassword && formData.newPassword) {
+                        const credential = EmailAuthProvider.credential(
+                            user.email,
+                            formData.currentPassword
+                        );
+                        await reauthenticateWithCredential(user, credential);
+                        await updatePassword(user, formData.newPassword);
+                        alert('Password updated successfully!');
+                    }
+                    break;
+
+                case 'genres':
+                    await updateDoc(doc(firestore, "users", user.uid), {
+                        selectedGenres: formData.selectedGenres
+                    });
+                    alert('Genres updated successfully!');
+                    break;
             }
+        } catch (error) {
+            alert('Error saving changes: ' + error.message);
         }
     };
 
-    const handleCancelFirstNameChange = () => {
-        setNewFirstName(firstName);
-        setIsEditingFirstName(false);
-    };
 
-    const handleCancelLastNameChange = () => {
-        setNewLastName(lastName);
-        setIsEditingLastName(false);
-    };
-
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentItems = previousPurchases.slice(startIndex, endIndex);
+    const startIndex = (formData.page - 1) * itemsPerPage;
+    const currentItems = formData.previousPurchases.slice(startIndex, startIndex + itemsPerPage);
 
     return (
         <div className="settings-container">
@@ -170,179 +121,100 @@ function SettingsView() {
             <div className="settings-content">
                 <h1 className="settings-title">Account Settings</h1>
                 <div className="settings-card">
+                    {!isGoogleUser && (
+                        <>
+                            <div className="settings-field">
+                                <label className="settings-label">Name</label>
+                                <input
+                                    type="text"
+                                    value={formData.firstName}
+                                    onChange={e => setFormData({ ...formData, firstName: e.target.value })}
+                                    className="settings-input"
+                                />
+                                <input
+                                    type="text"
+                                    value={formData.lastName}
+                                    onChange={e => setFormData({ ...formData, lastName: e.target.value })}
+                                    className="settings-input"
+                                />
+                                <button className="edit-button" onClick={() => handleSave('name')}>Save</button>
+                            </div>
 
+                            <div className="settings-field">
+                                <label className="settings-label">Password</label>
+                                <input
+                                    type="password"
+                                    placeholder="Current Password"
+                                    value={formData.currentPassword}
+                                    onChange={e => setFormData({ ...formData, currentPassword: e.target.value })}
+                                    className="settings-input"
+                                />
+                                <input
+                                    type="password"
+                                    placeholder="New Password"
+                                    value={formData.newPassword}
+                                    onChange={e => setFormData({ ...formData, newPassword: e.target.value })}
+                                    className="settings-input"
+                                />
+                                <button className="edit-button" onClick={() => handleSave('password')}>Update Password</button>
+                            </div>
+                        </>
+                    )}
 
-                    <div className="settings-field">
-
-                        <label className="settings-label">First Name</label>
-
-
-                        <label className="settings-info-value">
-                            {isGoogleUser ? (
-                                <span>{firstName}</span>
-                            ) : (
-                                isEditingFirstName ? (
-                                    <input type="text" value={newFirstName} onChange={handleFirstNameChange} />
-                                ) : (
-                                    <span>{firstName}</span>
-                                )
-                            )}
-                        </label>
-                        {!isGoogleUser && (
-                            <>
-                                {!isEditingFirstName && (
-                                    <button className="edit-button" onClick={() => setIsEditingFirstName(true)}>Edit</button>
-                                )}
-                                {isEditingFirstName && (
-                                    <>
-                                        <div className="edit-buttons">
-                                            <button className="edit-button" onClick={handleSaveFirstName}>Save</button>
-                                            <button className="edit-button" onClick={handleCancelFirstNameChange}>Cancel</button>
-                                        </div>
-                                    </>
-                                )}
-                            </>
-                        )}
-
-                    </div>
-
-                    <div className="settings-field">
-                        <label className="settings-label">Last Name</label>
-                        <label className="settings-info-value">
-                            {isGoogleUser ? (
-                                <span>{lastName}</span>
-                            ) : (
-                                isEditingLastName ? (
-                                    <input type="text" value={newLastName} onChange={handleLastNameChange} />
-                                ) : (
-                                    <span>{lastName}</span>
-                                )
-                            )}
-                        </label>
-                        {!isGoogleUser && (
-                            <>
-                                {!isEditingLastName && (
-                                    <button className="edit-button" onClick={() => setIsEditingLastName(true)}>Edit</button>
-                                )}
-                                {isEditingLastName && (
-                                    <>
-                                        <div className="edit-buttons">
-                                            <button className="edit-button" onClick={handleSaveLastName}>Save</button>
-                                            <button className="edit-button" onClick={handleCancelLastNameChange}>Cancel</button>
-                                        </div>
-                                    </>
-                                )}
-                            </>
-                        )}
-                    </div>
-
-                    <div className="settings-field">
-                        <label className="settings-label">Email</label>
-                        <span className="settings-value">{user.email}</span>
-                    </div>
-
-
-                    <div className='settings-field'>
-                        <label className="settings-label">Password</label>
-                        {!isGoogleUser && (
-                            <>
-                                <div className="settings-section">
-                                    {isPasswordSectionExpanded ? (
-                                        <>
-                                            <div className="change-password-section">
-                                                <div className="current-password-section">
-                                                    <input
-                                                        type="password"
-                                                        value={currentPassword}
-                                                        onChange={(e) => setCurrentPassword(e.target.value)}
-                                                        placeholder="Current password"
-                                                    />
-                                                    <button className="edit-button" onClick={handleCancelPasswordChange}>Cancel</button>
-                                                </div>
-                                                <div className="new-password-section">
-                                                    <input
-                                                        type="password"
-                                                        value={newPassword}
-                                                        onChange={(e) => setNewPassword(e.target.value)}
-                                                        placeholder="New password"
-                                                    />
-                                                    <button className="edit-button" onClick={handleUpdatePassword}>Update</button>
-                                                </div>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <span className="settings-info-value">••••••••</span>
-                                            <button className="edit-button" onClick={handlePasswordChange}>Change</button>
-                                        </>
-                                    )}
-                                </div>
-                            </>
-                        )}
-                    </div>
                     <div className="settings-field">
                         <label className="settings-label">Favorite Genres</label>
                         <div className="genre-grid">
-                            {genresList.map((genre) => (
+                            {genresList.map(genre => (
                                 <label key={genre.id} className="genre-item">
                                     <input
                                         type="checkbox"
-                                        id={`genre-${genre.id}`}
-                                        checked={selectedGenres.some(g => g.id === genre.id)}
-                                        onChange={() => handleGenreChange(genre)}
+                                        checked={formData.selectedGenres.some(g => g.id === genre.id)}
+                                        onChange={() => {
+                                            const newGenres = formData.selectedGenres.some(g => g.id === genre.id)
+                                                ? formData.selectedGenres.filter(g => g.id !== genre.id)
+                                                : [...formData.selectedGenres, genre];
+                                            setFormData({ ...formData, selectedGenres: newGenres });
+                                        }}
                                         className="genre-checkbox"
                                     />
                                     <span className="genre-label">{genre.genre}</span>
                                 </label>
                             ))}
                         </div>
-                        <button className="edit-button" onClick={handleSaveGenres}>Save</button>
+                        <button className="edit-button" onClick={() => handleSave('genres')}>Save Genres</button>
                     </div>
 
-
-                </div>
-                <div className="previous-purchases-container">
-                    <h2 className="previous-purchases-title">Previous Purchases</h2>
-                    <div className="genre-movies-grid">
-                        {currentItems.length > 0 ? (
-                            currentItems.map((purchase) => (
+                    <div className="previous-purchases-container">
+                        <h2>Previous Purchases</h2>
+                        <div className="genre-movies-grid">
+                            {currentItems.map(purchase => (
                                 <div key={purchase.id} className="movie-card">
-                                    <Link to={`/movies/details/${purchase.id}`}>
-                                        <img
-                                            src={purchase.poster_path
-                                                ? `https://image.tmdb.org/t/p/w500${purchase.poster_path}`
-                                                : 'https://via.placeholder.com/500x750?text=No+Poster'
-                                            }
-                                            alt={purchase.title}
-                                        />
-                                    </Link>
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w500${purchase.poster_path}`}
+                                        alt={purchase.title}
+                                    />
                                     <h3>{purchase.title}</h3>
                                     <p>Rating: {purchase.vote_average?.toFixed(1)}</p>
                                 </div>
-                            ))
-                        ) : (
-                            <p className='previous-purchases-none-message'>No previous purchases found.</p>
-                        )}
-                    </div>
-                    <div className="genre-view-pagination-container">
-                        <button
-                            className="genre-view-pagination-button"
-                            onClick={() => setPage((p) => Math.max(p - 1, 1))}
-                        >
-                            Prev
-                        </button>
-                        <button
-                            className="genre-view-pagination-button"
-                            onClick={() => setPage((p) => p + 1)}
-                        >
-                            Next
-                        </button>
+                            ))}
+                        </div>
+                        <div className="genre-view-pagination-container">
+                            <button
+                                className="genre-view-pagination-button"
+                                onClick={() => setFormData({ ...formData, page: Math.max(formData.page - 1, 1) })}
+                            >
+                                Prev
+                            </button>
+                            <button
+                                className="genre-view-pagination-button"
+                                onClick={() => setFormData({ ...formData, page: formData.page + 1 })}
+                            >
+                                Next
+                            </button>
+                        </div>
                     </div>
                 </div>
-
-
             </div>
-
             <FooterSection />
         </div>
     );
