@@ -1,6 +1,6 @@
 import './LoginRegisterView.css'
-import FooterSection from './components/FooterSection.jsx'
-import HeaderSection from './components/HeaderSection.jsx';
+import FooterSection from '../components/FooterSection.jsx'
+import HeaderSection from '../components/HeaderSection.jsx';
 import { Link, useNavigate } from 'react-router-dom';
 import { doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";

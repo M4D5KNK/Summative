@@ -1,9 +1,9 @@
 import './HeaderSection.css'
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { useStoreContext } from '../../context/context';
+import { useStoreContext } from "../context/context";
 import { signOut } from "firebase/auth";
-import { auth } from "../../firebase";
+import { auth } from "../firebase";
 import React, { useState, useEffect } from 'react';
 
 function HeaderSection() {

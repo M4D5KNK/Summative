@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url('../views/components/images/posters-background.jpg');
+    background: url('../components/Images/posters-background.jpg');
     height: calc(100vh - 75px);
 }
 

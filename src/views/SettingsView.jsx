@@ -3,9 +3,8 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential, getAuth } from "firebase/auth";
 import { firestore } from "../firebase";
 import { useStoreContext } from "../context/context";
-import { Link } from 'react-router-dom';
-import HeaderSection from './components/HeaderSection';
-import FooterSection from './components/FooterSection';
+import HeaderSection from '../components/HeaderSection';
+import FooterSection from '../components/FooterSection';
 import "./SettingsView.css";
 
 function SettingsView() {

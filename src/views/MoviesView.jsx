@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import HeaderSection from "./components/HeaderSection";
-import Genres from "./components/Genres";
-import FooterSection from "./components/FooterSection";
+import HeaderSection from "../components/HeaderSection";
+import Genres from "../components/Genres";
+import FooterSection from "../components/FooterSection";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, firestore } from "../firebase";
 import "./MoviesView.css";

@@ -3,8 +3,8 @@ import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 
 import { auth } from "../firebase";
 import { useStoreContext } from '../context/context';
 import { Link, useNavigate } from 'react-router-dom';
-import HeaderSection from './components/HeaderSection';
-import FooterSection from './components/FooterSection';
+import HeaderSection from '../components/HeaderSection';
+import FooterSection from '../components/FooterSection';
 import './LoginRegisterView.css';
 
 function LoginView() {

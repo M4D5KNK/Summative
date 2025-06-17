@@ -1,8 +1,8 @@
 import { useStoreContext } from '../context/context.jsx';
 import { Link } from 'react-router-dom';
-import HeaderSection from './components/HeaderSection.jsx';
+import HeaderSection from '../components/HeaderSection.jsx'
 import "./CartView.css";
-import FooterSection from './components/FooterSection.jsx';
+import FooterSection from '../components/FooterSection.jsx';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { useState } from 'react';
